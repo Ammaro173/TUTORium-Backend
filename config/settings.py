@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "polymorphic",
     "tutor",
 ]
 
@@ -122,3 +123,10 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# SESSION_ENGINE = "django.contrib.sessions.backends.file"
+
+# Email backend
+# EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+# EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'wrong
+# EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'mainApp/tmp/app-messages') wrong
