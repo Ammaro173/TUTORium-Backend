@@ -2,19 +2,13 @@ from django.db import models
 from django.contrib.auth import get_user_model
 from polymorphic.models import PolymorphicModel
 
+# from django.contrib.contenttypes.models import ContentType
+
 # Create your models here.
 
 # category model
 class MainCategory(models.Model):
     name = models.CharField(max_length=100)  # {_id :1,name: programming}
-
-    def __str__(self):
-        return self.name
-
-
-# University model
-class University(models.Model):
-    name = models.CharField(max_length=200)
 
     def __str__(self):
         return self.name
@@ -31,18 +25,19 @@ class Course(models.Model):
         return self.name
 
 
-# wallet system model
-class Wallet(PolymorphicModel):
-    balance = models.FloatField()
+# University model
+class University(models.Model):
+    name = models.CharField(max_length=100)
 
-    def add_funds(
-        self,
-        amount,
-    ):
-        self.balance += amount
+    def __str__(self):
+        return self.name
+
+
+# wallet system model
 
 
 class User(models.Model):
+
     name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255, blank=True)
     avatar = models.ImageField(upload_to="avatars/", blank=True)
@@ -50,14 +45,19 @@ class User(models.Model):
     email = models.EmailField(max_length=255, unique=True)
     password = models.CharField(max_length=255)  # model.password? check forms?
     contact = models.CharField(max_length=20, blank=True)
-    wallet = models.OneToOneField(Wallet)
+    is_tutor = models.BooleanField(default=False)
+    is_student = models.BooleanField(default=False)
 
-    def create_wallet(self):
-        wallet = Wallet(balance=0)
-        wallet.save()  # This performs an INSERT SQL statement behind the scenes. Django doesn’t hit the database until you explicitly call save(). The save() method has no return value.
+    # wallet = models.OneToOneField(Wallet)
 
-        # self.wallet = wallet
-        return wallet
+    # def create_wallet(self):
+    #     wallet = Wallet(balance=0)
+    #     wallet.save()
+
+    #     # self.wallet = wallet
+    #     return wallet
+    def __str__(self):
+        return self.name
 
     def be_student(self):
         student = Student(user=self)
@@ -111,8 +111,13 @@ class Tutor(PolymorphicModel):
     def __str__(self):
         return self.name
 
+    # function for list_display in admin.py
+    def _get_courses(self):
+        return "/\t".join([ele.name for ele in self.courses.all()])
+
 
 class PrivateTutor(Tutor):
+
     rate = models.PositiveIntegerField()
 
     def __str__(self):
@@ -145,10 +150,20 @@ class UnavailableSlot(models.Model):
 
 
 class Transaction(PolymorphicModel):
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     amount = models.FloatField()
     date = models.DateField()
     time = models.TimeField()
+
+
+# class Wallet(PolymorphicModel):
+#     balance = models.FloatField()
+
+#     def add_funds(
+#         self,
+#         amount,
+#     ):
+#         self.balance += amount
 
 
 ######################
