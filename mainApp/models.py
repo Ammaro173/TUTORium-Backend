@@ -17,20 +17,24 @@ class MainCategory(models.Model):
 # viewed courses model
 class Course(models.Model):
     name = models.CharField(max_length=255)
+    # is_available_private = models.BooleanField(default=True)
     course_category = models.ForeignKey(
         MainCategory, on_delete=models.CASCADE
     )  # {_id:1 , course_name : py , course_category : programming}
+    price = models.IntegerField(default=0 , null=True)
+    description = models.TextField(max_length=1000 , null=True)
+    available_seat = models.PositiveIntegerField(default=1 , null=True)
 
     def __str__(self):
         return self.name
 
 
 # University model
-class University(models.Model):
-    name = models.CharField(max_length=100)
+# class University(models.Model):
+#     name = models.CharField(max_length=100)
 
-    def __str__(self):
-        return self.name
+#     def __str__(self):
+#         return self.name
 
 
 # wallet system model
@@ -45,6 +49,9 @@ class User(models.Model):
     email = models.EmailField(max_length=255, unique=True)
     password = models.CharField(max_length=255)  # model.password? check forms?
     contact = models.CharField(max_length=20, blank=True)
+    country = models.TextField(max_length=255 , null=True)
+    city = models.TextField(max_length=255 , null=True)
+    Education = models.TextField(max_length=255 , null=True)
     is_tutor = models.BooleanField(default=False)
     is_student = models.BooleanField(default=False)
 
@@ -59,10 +66,10 @@ class User(models.Model):
     def __str__(self):
         return self.name
 
-    def be_student(self):
-        student = Student(user=self)
-        student.save()
-        return student
+    # def be_student(self):
+    #     student = Student(user=self)
+    #     student.save()
+    #     return student
 
     def be_tutor(self, short_bio, is_private, rate=0):
         if is_private:
@@ -85,6 +92,7 @@ class Student(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
     updatedtime = models.DateTimeField(auto_now=True)
     courses = models.ManyToManyField(Course)
+    # forign key
     # gender = models.BooleanField()
     # image
 
@@ -99,8 +107,7 @@ class Tutor(PolymorphicModel):
     teaching_experience = models.PositiveIntegerField(
         help_text="Enter the teaching Experience period"
     )
-
-    # under sh3`l`  one to one !
+    # comment the 2 line bellow
     category = models.ForeignKey(MainCategory, on_delete=models.CASCADE)
     courses = models.ManyToManyField(Course)  # check many to many or foreign key
     timestamp = models.DateTimeField(auto_now_add=True)
