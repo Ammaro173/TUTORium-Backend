@@ -37,8 +37,13 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+
+    # app
     "polymorphic",
     "mainApp",
+
+    #rest
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -130,3 +135,9 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 # EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'wrong
 # EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'mainApp/tmp/app-messages') wrong
+
+REST_FRAMEWORK = {
+'DEFAULT_PERMISSION_CLASSES': [
+'rest_framework.permissions.IsAuthenticated',
+]}
+
