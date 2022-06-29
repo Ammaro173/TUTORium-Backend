@@ -7,7 +7,7 @@ from .models import (
     MainCategory,
     # Wallet,
     Transaction,
-    User,
+    Visitor,
     PrivateTutor,
     ContractedTutor,
     UnavailableSlot,
@@ -19,7 +19,7 @@ admin.site.register(Tutor)
 admin.site.register(Course)
 admin.site.register(MainCategory)
 admin.site.register(Transaction)
-admin.site.register(User)
+admin.site.register(Visitor)
 admin.site.register(PrivateTutor)
 admin.site.register(ContractedTutor)
 admin.site.register(UnavailableSlot)

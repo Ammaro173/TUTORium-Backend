@@ -1,12 +1,17 @@
+from posixpath import basename
+from unicodedata import name
+from rest_framework.routers import DefaultRouter
+
+
 from django.urls import path
 from mainApp.api.views import ( MainCategorylist, 
                                 MainCategoryRUD,
                                 Courselist,
                                 CourseRUD,
                                 CourseCreate,
-                                Userlist,
-                                UserRUD,
-                                UserCreate,
+                                # Visitorlist,
+                                # VisitorRUD,
+                                # VisitorCreate,
                                 Studentlist,
                                 StudentRUD,
                                 StudentCreate, 
@@ -24,7 +29,14 @@ from mainApp.api.views import ( MainCategorylist,
                                 UnavailableSlotCreate, 
                                 Transactionlist,
                                 TransactionRUD,
-                                TransactionCreate            )
+                                TransactionCreate,
+                                UserViewset, 
+                                      )
+
+
+
+router = DefaultRouter()
+router.register('user' , UserViewset)
 
 
 urlpatterns = [
@@ -39,10 +51,10 @@ urlpatterns = [
     path('course-post' , CourseCreate.as_view(), name='create_post'),
 
 
-    # user
-    path('user',Userlist.as_view(), name = 'user_list'),
-    path('user-rud/<int:pk>',UserRUD.as_view(), name = 'courses_list_rud'),
-    path('user-post' , UserCreate.as_view(), name='user_post'),
+    # # visitor
+    # path('visitor',Visitorlist.as_view(), name = 'visitor_list'),
+    # path('visitor-rud/<int:pk>',VisitorRUD.as_view(), name = 'courses_list_rud'),
+    # path('visitor-post' , VisitorCreate.as_view(), name='visitor_post'),
 
 
     # Student
@@ -79,5 +91,9 @@ urlpatterns = [
     path('transaction-rud/<int:pk>', TransactionRUD.as_view(), name = 'transaction_list_rud'),
     path('transaction-post' , TransactionCreate.as_view(), name='transaction_post'),
 
-
 ]
+
+
+
+
+urlpatterns += router.urls

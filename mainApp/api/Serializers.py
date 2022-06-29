@@ -1,11 +1,11 @@
-from dataclasses import field
+
 from pyexpat import model
-from attr import fields
+from attr import field
 from rest_framework import serializers
 from mainApp.models import (
                                 MainCategory,
                                 Course,
-                                User,
+                                Visitor,
                                 Student,
                                 Tutor,
                                 PrivateTutor,
@@ -14,7 +14,9 @@ from mainApp.models import (
                                 Transaction,
 
 )
-
+# sign up
+from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 
 
 class MainCategorySerializer (serializers.ModelSerializer):
@@ -29,11 +31,11 @@ class CourseSerializer (serializers.ModelSerializer):
         fields = '__all__'
 
     
-class UserSerializer (serializers.ModelSerializer):
+class VisitorSerializer (serializers.ModelSerializer):
     password = serializers.CharField(
         style={'input_type': 'password'})
     class Meta:
-        model = User
+        model = Visitor
         fields = '__all__'
 
 
@@ -70,3 +72,57 @@ class TransactionSerializer (serializers.ModelSerializer):
     class Meta:
         model = Transaction
         fields = '__all__'
+
+
+
+# Sign up API
+MinLenghth = 8
+class SignupSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(
+        write_only = True,
+        min_length = MinLenghth,
+        error_messages = {
+            'min_length' :'Password must be longer than {MinLenghth} characters.'
+        }
+    )
+
+    ensure_password = serializers.CharField(
+        write_only = True,
+        min_length = MinLenghth,
+        error_messages = {
+            'min_length' :'Password must be longer than {MinLenghth} characters.'
+        }
+    )
+
+
+    class Meta:
+        model = User
+        fields = '__all__'
+
+    
+    def validate(self, data):
+        if data['password'] != data['ensure_password']:
+            raise serializers.ValidationError('password does not match. ')
+
+        return data
+
+    def create(self, validated_data):
+        user = User.objects.create(
+            username = validated_data['username'],
+            email=validated_data['email'],
+            first_name = validated_data['first_name'],
+            last_name = validated_data['last_name'],
+            # active = validated_data['active']
+        )
+        user.set_password(validated_data['password'])
+        user.save()
+
+        return user
+
+
+
+# log in 
+class LoginSerializer(serializers.ModelSerializer):
+        class Meta:
+            model = get_user_model()
+            field = '__all__'
