@@ -1,8 +1,12 @@
-from rest_framework.generics import ListCreateAPIView , RetrieveUpdateDestroyAPIView , CreateAPIView
+from rest_framework.generics import ListCreateAPIView , RetrieveUpdateDestroyAPIView , CreateAPIView 
+# for sign up
+from rest_framework import viewsets
+from django.contrib.auth.models import User
+
 from mainApp.models import (
                             MainCategory,
                             Course,
-                            User,
+                            Visitor,
                             Student,
                             Tutor,
                             PrivateTutor,
@@ -10,22 +14,28 @@ from mainApp.models import (
                             UnavailableSlot,
                             Transaction,
 
-
 )
 from .Serializers import (
                             MainCategorySerializer,
                             CourseSerializer,
-                            UserSerializer,
+                            VisitorSerializer,
                             StudentSerializer,
                             TutorSerializer,
                             PrivateTutorSerializer,
                             ContractedTutorSerializer,
                             UnavailableSlotSerializer,
-                            TransactionSerializer
+                            TransactionSerializer,
+                            SignupSerializer,
+                            LoginSerializer,
                             ) 
 from .permission import IsOwnerOrReadOnly , permissions
 # Catergor for cards -> list view
-# when teacher post a class should choose from caterories
+# when teacher post a class should choose from caterorie
+
+from django.contrib.auth import get_user_model
+from rest_framework.permissions import IsAuthenticated
+# or IsAuthenticatedOrReadOnly
+
 class MainCategorylist(ListCreateAPIView):
      queryset = MainCategory.objects.all()
      serializer_class = MainCategorySerializer
@@ -57,22 +67,22 @@ class CourseCreate(CreateAPIView):
      
 
 
-# User
-class Userlist(ListCreateAPIView):
-     queryset = User.objects.all()
-     serializer_class =UserSerializer
-     permission_classes = (IsOwnerOrReadOnly , permissions.IsAuthenticated )
+# # Visitor
+# class Visitorlist(ListCreateAPIView):
+#      queryset = Visitor.objects.all()
+#      serializer_class =VisitorSerializer
+#      permission_classes = (IsOwnerOrReadOnly , permissions.IsAuthenticated )
 
 
-class UserRUD(RetrieveUpdateDestroyAPIView):
-     queryset =  User.objects.all()
-     serializer_class = UserSerializer
-     permission_classes = (IsOwnerOrReadOnly , permissions.IsAuthenticated )
+# class VisitorRUD(RetrieveUpdateDestroyAPIView):
+#      queryset =  Visitor.objects.all()
+#      serializer_class = VisitorSerializer
+#      permission_classes = (IsOwnerOrReadOnly , permissions.IsAuthenticated )
 
-class UserCreate(CreateAPIView):
-     queryset =  User.objects.all()
-     serializer_class = UserSerializer
-     permission_classes = (IsOwnerOrReadOnly , permissions.IsAuthenticated )
+# class VisitorCreate(CreateAPIView):
+#      queryset =  Visitor.objects.all()
+#      serializer_class = VisitorSerializer
+#      permission_classes = (IsOwnerOrReadOnly , permissions.IsAuthenticated )
 
 
 # Student 
@@ -183,3 +193,13 @@ class TransactionCreate(CreateAPIView):
      queryset =  Transaction.objects.all()
      serializer_class = TransactionSerializer
      permission_classes = (IsOwnerOrReadOnly , permissions.IsAuthenticated )
+
+
+# sign up
+class UserViewset(viewsets.ModelViewSet):
+     queryset = User.objects.all()
+     serializer_class = SignupSerializer
+
+
+# login
+# Creating private endpoint

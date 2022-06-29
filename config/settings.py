@@ -44,7 +44,20 @@ INSTALLED_APPS = [
 
     #rest
     'rest_framework',
+
+
+    # login
+    'rest_framework.authtoken'
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    ] ,
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )}
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",

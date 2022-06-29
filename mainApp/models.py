@@ -39,8 +39,8 @@ class Course(models.Model):
 
 # wallet system model
 
-
-class User(models.Model):
+# i change user to visitor
+class Visitor(models.Model):
 
     name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255, blank=True)
@@ -157,7 +157,7 @@ class UnavailableSlot(models.Model):
 
 
 class Transaction(PolymorphicModel):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(Visitor, on_delete=models.CASCADE)
     amount = models.FloatField()
     date = models.DateField()
     time = models.TimeField()
