@@ -1,8 +1,19 @@
 from rest_framework.generics import ListCreateAPIView , RetrieveUpdateDestroyAPIView , CreateAPIView 
+from rest_framework import generics , status
+from rest_framework.permissions import AllowAny , IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.decorators import api_view,permission_classes
+from .permission import IsOwnerOrReadOnly , permissions
 # for sign up
-from rest_framework import viewsets
+# from rest_framework import viewsets
 from django.contrib.auth.models import User
-
+from .Serializers import (
+                          MyTokenObtainPairSerializer,
+                          SignupSerializer
+)
+from rest_framework_simplejwt.views import (
+                         TokenObtainPairView
+)
 from mainApp.models import (
                             MainCategory,
                             Course,
@@ -26,15 +37,23 @@ from .Serializers import (
                             UnavailableSlotSerializer,
                             TransactionSerializer,
                             SignupSerializer,
-                            LoginSerializer,
                             ) 
-from .permission import IsOwnerOrReadOnly , permissions
+
 # Catergor for cards -> list view
 # when teacher post a class should choose from caterorie
 
 from django.contrib.auth import get_user_model
-from rest_framework.permissions import IsAuthenticated
+
 # or IsAuthenticatedOrReadOnly
+
+
+
+
+
+
+
+
+
 
 class MainCategorylist(ListCreateAPIView):
      queryset = MainCategory.objects.all()
@@ -196,10 +215,42 @@ class TransactionCreate(CreateAPIView):
 
 
 # sign up
-class UserViewset(viewsets.ModelViewSet):
-     queryset = User.objects.all()
-     serializer_class = SignupSerializer
+# class UserViewset(viewsets.ModelViewSet):
+#      queryset = User.objects.all()
+#      serializer_class = SignupSerializer
 
 
-# login
+# Token , Register
+class MyTokenObtainPairView(TokenObtainPairView):
+    serializer_class = MyTokenObtainPairSerializer
+
+class RegisterView(generics.CreateAPIView):
+    queryset = User.objects.all()
+    permission_classes = (AllowAny,)
+    serializer_class = SignupSerializer
+
+
+@api_view(['GET'])
+def getRoutes(request):
+     routes = [
+          '/api/token/',
+          '/api/register/',
+          '/api/token/refresh/'
+     ]
+     return Response(routes)
+
+
 # Creating private endpoint
+@api_view(['GET', 'POST'])
+@permission_classes([IsAuthenticated])
+def testEndPoint(request):
+    if request.method == 'GET':
+        data = f"Congratulation {request.user}, your API just responded to GET request"
+        return Response({'response': data}, status=status.HTTP_200_OK)
+    elif request.method == 'POST':
+        text = request.POST.get('text')
+        data = f'Congratulation your API just responded to POST request with text: {text}'
+        return Response({'response': data}, status=status.HTTP_200_OK)
+    return Response({}, status.HTTP_400_BAD_REQUEST)
+
+

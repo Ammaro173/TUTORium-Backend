@@ -24,6 +24,7 @@ class Course(models.Model):
     price = models.IntegerField(default=0 , null=True)
     description = models.TextField(max_length=1000 , null=True)
     available_seat = models.PositiveIntegerField(default=1 , null=True)
+    zoom_link = models.URLField(max_length=200, null=True)
 
     def __str__(self):
         return self.name
