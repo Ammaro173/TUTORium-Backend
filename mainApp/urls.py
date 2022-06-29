@@ -1,8 +1,17 @@
 from posixpath import basename
 from unicodedata import name
 from rest_framework.routers import DefaultRouter
-
-
+from rest_framework_simplejwt.views import (
+    TokenRefreshView,
+    
+)
+from . import views
+from .api.views import (
+                   MyTokenObtainPairView,
+                   RegisterView,
+                   getRoutes,
+                   testEndPoint,
+                  )
 from django.urls import path
 from mainApp.api.views import ( MainCategorylist, 
                                 MainCategoryRUD,
@@ -29,14 +38,13 @@ from mainApp.api.views import ( MainCategorylist,
                                 UnavailableSlotCreate, 
                                 Transactionlist,
                                 TransactionRUD,
-                                TransactionCreate,
-                                UserViewset, 
+                                TransactionCreate, 
                                       )
 
 
 
-router = DefaultRouter()
-router.register('user' , UserViewset)
+# router = DefaultRouter()
+# router.register('user' , UserViewset)
 
 
 urlpatterns = [
@@ -91,9 +99,18 @@ urlpatterns = [
     path('transaction-rud/<int:pk>', TransactionRUD.as_view(), name = 'transaction_list_rud'),
     path('transaction-post' , TransactionCreate.as_view(), name='transaction_post'),
 
+    
+    # Token
+    path('token/', MyTokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('register/', RegisterView.as_view(), name='auth_register'),
+    path('', getRoutes),
+    
+
+    # private endpoint
+    path('test/', testEndPoint ,name='test'),
+
 ]
 
 
-
-
-urlpatterns += router.urls
+# urlpatterns += router.urls

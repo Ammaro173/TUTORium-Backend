@@ -14,6 +14,7 @@ from mainApp.models import (
                                 Transaction,
 
 )
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 # sign up
 from django.contrib.auth.models import User
 from django.contrib.auth import get_user_model
@@ -75,22 +76,34 @@ class TransactionSerializer (serializers.ModelSerializer):
 
 
 
+# generating token Serializer
+class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+        token['username'] = user.username
+        token['email'] = user.email
+        return token
+
+
+
+
 # Sign up API
-MinLenghth = 8
+MinLength = 8
 class SignupSerializer(serializers.ModelSerializer):
     password = serializers.CharField(
         write_only = True,
-        min_length = MinLenghth,
+        min_length = MinLength,
         error_messages = {
-            'min_length' :'Password must be longer than {MinLenghth} characters.'
+            'min_length' :'Password must be longer than {MinLength} characters.'
         }
     )
 
     ensure_password = serializers.CharField(
         write_only = True,
-        min_length = MinLenghth,
+        min_length = MinLength,
         error_messages = {
-            'min_length' :'Password must be longer than {MinLenghth} characters.'
+            'min_length' :'Password must be longer than {MinLength} characters.'
         }
     )
 
@@ -121,8 +134,8 @@ class SignupSerializer(serializers.ModelSerializer):
 
 
 
-# log in 
-class LoginSerializer(serializers.ModelSerializer):
-        class Meta:
-            model = get_user_model()
-            field = '__all__'
+# # log in 
+# class LoginSerializer(serializers.ModelSerializer):
+#         class Meta:
+#             model = get_user_model()
+#             field = '__all__'
