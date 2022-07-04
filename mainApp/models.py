@@ -14,22 +14,6 @@ class MainCategory(models.Model):
         return self.name
 
 
-# viewed courses model
-class Course(models.Model):
-    name = models.CharField(max_length=255)
-    # is_available_private = models.BooleanField(default=True)
-    course_category = models.ForeignKey(
-        MainCategory, on_delete=models.CASCADE
-    )  # {_id:1 , course_name : py , course_category : programming}
-    price = models.IntegerField(default=0 , null=True)
-    description = models.TextField(max_length=1000 , null=True)
-    available_seat = models.PositiveIntegerField(default=1 , null=True)
-    zoom_link = models.URLField(max_length=200, null=True)
-
-    def __str__(self):
-        return self.name
-
-
 # University model
 # class University(models.Model):
 #     name = models.CharField(max_length=100)
@@ -50,9 +34,9 @@ class Visitor(models.Model):
     email = models.EmailField(max_length=255, unique=True)
     password = models.CharField(max_length=255)  # model.password? check forms?
     contact = models.CharField(max_length=20, blank=True)
-    country = models.TextField(max_length=255 , null=True)
-    city = models.TextField(max_length=255 , null=True)
-    Education = models.TextField(max_length=255 , null=True)
+    country = models.TextField(max_length=255, null=True)
+    city = models.TextField(max_length=255, null=True)
+    Education = models.TextField(max_length=255, null=True)
     is_tutor = models.BooleanField(default=False)
     is_student = models.BooleanField(default=False)
 
@@ -92,8 +76,12 @@ class Student(models.Model):
     email = models.EmailField()
     timestamp = models.DateTimeField(auto_now_add=True)
     updatedtime = models.DateTimeField(auto_now=True)
-    courses = models.ManyToManyField(Course)
-    # forign key
+    courses = models.ManyToManyField("Course")
+
+    def _get_courses_student(self):
+        return "/\t".join([ele.name for ele in self.courses.all()])
+
+    # forign keys
     # gender = models.BooleanField()
     # image
 
@@ -110,7 +98,9 @@ class Tutor(PolymorphicModel):
     )
     # comment the 2 line bellow
     category = models.ForeignKey(MainCategory, on_delete=models.CASCADE)
-    courses = models.ManyToManyField(Course)  # check many to many or foreign key
+    courses_in = models.ManyToManyField(
+        "Course", related_name="+"
+    )  # check many to many or foreign key
     timestamp = models.DateTimeField(auto_now_add=True)
     updatedtime = models.DateTimeField(auto_now=True)
     # gender = models.BooleanField()
@@ -122,6 +112,29 @@ class Tutor(PolymorphicModel):
     # function for list_display in admin.py
     def _get_courses(self):
         return "/\t".join([ele.name for ele in self.courses.all()])
+
+
+# viewed courses model
+class Course(models.Model):
+    name = models.CharField(max_length=255)
+    # is_available_private = models.BooleanField(default=True)
+    course_category = models.ForeignKey(
+        MainCategory, on_delete=models.CASCADE
+    )  # {_id:1 , course_name : py , course_category : programming}
+    price = models.IntegerField(default=0, null=True)
+    short_bio = models.TextField(default="", null=True)
+    description = models.TextField(max_length=1000, null=True)
+    available_seat = models.PositiveIntegerField(default=1, null=True)
+    zoom_link = models.URLField(max_length=200, null=True)
+    likes = models.PositiveIntegerField(default=0, null=True)
+    tutors = models.ForeignKey(
+        "Tutor", on_delete=models.CASCADE, null=True, default=None, related_name="+"
+    )
+    students_in = models.ManyToManyField(Student, related_name="+")
+    schedule = models.TimeField(null=True)
+
+    def __str__(self):
+        return self.name
 
 
 class PrivateTutor(Tutor):
@@ -164,6 +177,14 @@ class Transaction(PolymorphicModel):
     time = models.TimeField()
 
 
+# class CourseDetails(models.Model):
+#     course = models.ForeignKey(Course, on_delete=models.CASCADE)
+#     course_category = models.ForeignKey(
+#         MainCategory, on_delete=models.CASCADE, default=1
+#     )
+#     price
+
+
 # class Wallet(PolymorphicModel):
 #     balance = models.FloatField()
 
@@ -188,11 +209,3 @@ class Transaction(PolymorphicModel):
 #     spot = (
 #         models.DateField()
 #     )  # Make sure you don't use 'time' for this field, as that will cause a headache later on.
-
-
-## dont foregt to mack branches
-## how to add multiple categories ?? (multiple foreign key for the same key)
-## how to make sure subCategory is only connected to its Main categorty !!
-## k3ksh in django function inside classes ()
-### check user settings before creating super use thing!!
-## add wallet system   polymorphic>?

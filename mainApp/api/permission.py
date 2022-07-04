@@ -7,3 +7,6 @@ class IsOwnerOrReadOnly(permissions.BasePermission):
             return True
 
         return obj.auth == request.user
+
+
+#
