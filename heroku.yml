@@ -4,5 +4,5 @@ build:
 release:
   image: web
 run:
-  # web: gunicorn project.wsgi --workers 4
-  web: gunicorn --chdir FromThePath FromThePath.wsgi
+  web: gunicorn wsgi --workers 4
+  # web: gunicorn --chdir FromThePath FromThePath.wsgi
