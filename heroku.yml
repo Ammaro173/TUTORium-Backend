@@ -3,5 +3,5 @@ build:
     web: Dockerfile
 release:
   image: web
-# run:
-#   web: gunicorn project.wsgi --workers 4
+run:
+  web: gunicorn project.wsgi --workers 4

@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     # app
     "polymorphic",
+    "corsheaders",
     "mainApp",
     # rest
     "rest_framework",
