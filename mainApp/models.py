@@ -76,14 +76,10 @@ class Student(models.Model):
     email = models.EmailField()
     timestamp = models.DateTimeField(auto_now_add=True)
     updatedtime = models.DateTimeField(auto_now=True)
-    courses = models.ManyToManyField("Course")
+    courses = models.ManyToManyField("Course", blank=True)
 
     def _get_courses_student(self):
         return "/\t".join([ele.name for ele in self.courses.all()])
-
-    # forign keys
-    # gender = models.BooleanField()
-    # image
 
     def __str__(self):
         return self.name
@@ -99,12 +95,10 @@ class Tutor(PolymorphicModel):
     # comment the 2 line bellow
     category = models.ForeignKey(MainCategory, on_delete=models.CASCADE)
     courses_in = models.ManyToManyField(
-        "Course", related_name="+"
+        "Course", related_name="+", blank=True
     )  # check many to many or foreign key
     timestamp = models.DateTimeField(auto_now_add=True)
     updatedtime = models.DateTimeField(auto_now=True)
-    # gender = models.BooleanField()
-    # image
 
     def __str__(self):
         return self.name
@@ -128,10 +122,15 @@ class Course(models.Model):
     zoom_link = models.URLField(max_length=200, null=True)
     likes = models.PositiveIntegerField(default=0, null=True)
     tutors = models.ForeignKey(
-        "Tutor", on_delete=models.CASCADE, null=True, default=None, related_name="+"
+        "Tutor",
+        on_delete=models.CASCADE,
+        null=True,
+        default=None,
+        related_name="+",
+        blank=True,
     )
-    students_in = models.ManyToManyField(Student, related_name="+")
-    schedule = models.TimeField(null=True)
+    students_in = models.ManyToManyField(Student, related_name="+", blank=True)
+    schedule = models.TimeField(null=True, blank=True)
 
     def __str__(self):
         return self.name
