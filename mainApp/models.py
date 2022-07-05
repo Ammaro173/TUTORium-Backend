@@ -114,7 +114,7 @@ class Course(models.Model):
     # is_available_private = models.BooleanField(default=True)
     course_category = models.ForeignKey(
         MainCategory, on_delete=models.CASCADE, blank=True, null=True
-    )  # {_id:1 , course_name : py , course_category : programming}
+    )  ## null =ture ?? check .... also check serializers.StringRelatedField(many=False) causing this issue!!
     price = models.IntegerField(default=0, null=True)
     short_bio = models.TextField(default="", null=True)
     description = models.TextField(max_length=1000, null=True)
@@ -130,7 +130,7 @@ class Course(models.Model):
         blank=True,
     )
     students_in = models.ManyToManyField(Student, related_name="+", blank=True)
-    schedule = models.TimeField(null=True, blank=True)
+    schedule = models.CharField(null=True, blank=True)
 
     def __str__(self):
         return self.name
