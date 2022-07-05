@@ -94,7 +94,7 @@ class Tutor(PolymorphicModel):
     )
     # comment the 2 line bellow
     category = models.ForeignKey(MainCategory, on_delete=models.CASCADE)
-    courses_in = models.ManyToManyField(
+    courses = models.ManyToManyField(
         "Course", related_name="+", blank=True
     )  # check many to many or foreign key
     timestamp = models.DateTimeField(auto_now_add=True)
