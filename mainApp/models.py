@@ -113,7 +113,7 @@ class Course(models.Model):
     name = models.CharField(max_length=255)
     # is_available_private = models.BooleanField(default=True)
     course_category = models.ForeignKey(
-        MainCategory, on_delete=models.CASCADE
+        MainCategory, on_delete=models.CASCADE, blank=True, null=True
     )  # {_id:1 , course_name : py , course_category : programming}
     price = models.IntegerField(default=0, null=True)
     short_bio = models.TextField(default="", null=True)
